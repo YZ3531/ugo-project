@@ -59,8 +59,13 @@
       // 点击确定去列表页
       goList(){
         // 小程序有专门实现本地存储的API
+        // 追加到历史记录列表
         this.history.push(this.keyWords)
+        // 去除重复
+        this.history = [...new Set(this.history)]
+        // 存入本地
         uni.setStorageSync('history',this.history) 
+
         // 小程序有专门实现跳转的API
         uni.navigateTo({
           // 页面跳转携带上关键字
