@@ -8,8 +8,8 @@ export default function(Vue,config){
             // 解构出发请求时传入参数
             const {url,data} = params
 
-            // 显示加载提示框
-            uni.showLoading({title:"拼命加载"})
+            // 显示加载提示框,mask防止触摸穿透,重复发送请求
+            uni.showLoading({title:"拼命加载",mask:true})
 
             // 调用uni封装的请求 发送请求
             const res = await uni.request({
