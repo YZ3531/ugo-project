@@ -96,6 +96,9 @@
       this.getBannerList()
       this.getNavList()
       this.getFlootList()
+      // 调用API开启转发功能
+      uni.showShareMenu()
+      // 自定义转发内容
     },
     // 监听下拉事件,获取数据并显示下拉动画(小程序自带)
     async onPullDownRefresh(){
@@ -110,7 +113,18 @@
       // 将滚动距离记录下来
       this.scrollTop = ev.scrollTop
     },
-   
+    // 当用户点击了转发执行
+    onShareAppMessage(){
+      // 该事件回调的返回值即为转发的自定义内容
+      return {
+        // 转发标题
+        title:"江南皮革厂倒闭了!!!",
+        // 转发携带图片
+        imageUrl:"http://i1.hdslb.com/bfs/archive/7d8b831d5ea8c01e0c10c7161c9935ba8a27ddb0.jpg",
+        // 点击转发进入页面
+        path:"/pages/index/index"
+      }
+    }
   }
 </script>
 
