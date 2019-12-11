@@ -3,35 +3,16 @@
     <search @search="disableScroll" />
     <!-- 焦点图 -->
     <swiper class="banner" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
-      <swiper-item>
-        <navigator url="/pages/goods/index">
-          <image src="http://static.botue.com/ugo/uploads/banner1.png"></image>
-        </navigator>
-      </swiper-item>
-      <swiper-item>
-        <navigator url="/pages/goods/index">
-          <image src="http://static.botue.com/ugo/uploads/banner2.png"></image>
-        </navigator>
-      </swiper-item>
-      <swiper-item>
-        <navigator url="/pages/goods/index">
-          <image src="http://static.botue.com/ugo/uploads/banner3.png"></image>
+      <swiper-item v-for="banner in bannerList" :key="banner.goods_id">
+        <navigator :url="banner.navigator_url">
+          <image :src="banner.image_src"></image>
         </navigator>
       </swiper-item>
     </swiper>
     <!-- 导航条 -->
     <view class="navs">
-      <navigator open-type="switchTab" url="/pages/category/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_4@2x.png"></image>
-      </navigator>
-      <navigator url="/pages/list/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_3@2x.png"></image>
-      </navigator>
-      <navigator url="/pages/list/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_2@2x.png"></image>
-      </navigator>
-      <navigator url="/pages/list/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_1@2x.png"></image>
+      <navigator v-for="nav in navList" :key="nav.name" open-type="switchTab" :url="nav.navigator_url">
+        <image :src="nav.image_src"></image>
       </navigator>
     </view>
     <!-- 楼层 -->
@@ -115,7 +96,9 @@
 
     data () {
       return {
-        pageHeight: 'auto'
+        pageHeight: 'auto',
+        bannerList:[],
+        navList:[]
       }
     },
 
@@ -126,7 +109,34 @@
     methods: {
       disableScroll (ev) {
         this.pageHeight = ev.pageHeight + 'px';
+      },
+      // 获取轮播图数据
+      async getBannerList(){
+        const data =  await uni.request({
+          url:"https://www.uinav.com/api/public/v1/home/swiperdata"
+        })
+        this.bannerList = data[1].data.message
+      },
+      // 获取导航数据
+      async getNavList(){
+        const data = await uni.request({
+          url:"https://www.uinav.com/api/public/v1/home/catitems"
+        })
+        console.log(data)
+        this.navList = data[1].data.message
+
+      },
+      // 获取楼层数据,
+      getFlootList(){
+
       }
+    },
+    // 加载
+    onLoad(){
+      // 发送请求,获取首屏的数据
+      this.getBannerList()
+      this.getNavList()
+      this.getFlootList()
     }
   }
 </script>
