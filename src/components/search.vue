@@ -15,13 +15,25 @@
     </div>
     <!-- 搜索结果 -->
     <div class="content">
-      <div class="title">搜索历史<span class="clear"></span></div>
+      <div class="title">搜索历史<span class="clear" @click="removeHistory"></span></div>
       <div class="history">
-        <navigator url="/pages/list/index" v-for="(item,index) in history" :key="index">{{item}}</navigator>
+        <navigator 
+          :url="'/pages/list/index?query='+item" 
+          v-for="(item,index) in history" 
+          :key="index"
+        >
+          {{item}}
+        </navigator>
       </div>
       <!-- 结果 -->
       <scroll-view v-if="list.length" scroll-y class="result">
-        <navigator url="/pages/goods/index" v-for="item in list" :key="item.goods_id">{{item.goods_name}}</navigator>
+        <navigator 
+        :url="'/pages/goods/index?id='+item.goods_id" 
+        v-for="item in list" 
+        :key="item.goods_id"
+        >
+          {{item.goods_name}}
+        </navigator>
       </scroll-view>
     </div>
   </div>
@@ -71,6 +83,13 @@
           // 页面跳转携带上关键字
           url:"/pages/list/index?query="+this.keyWords
         })
+      },
+      // 清空历史记录
+      removeHistory(){
+        // 删除本地历史记录
+        uni.removeStorageSync('history')
+        // 清空列表数据
+        this.history = []
       },
       // 点击搜索
       goSearch (ev) {
