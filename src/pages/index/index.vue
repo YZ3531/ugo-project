@@ -30,7 +30,8 @@
      
     </view>
     <!-- 回到顶部 -->
-    <view class="goTop icon-top"></view>
+    <!-- v-show在小程序中有bug,使用v-if -->
+    <view class="goTop icon-top" v-if="scrollTop>200" @click="goTop"></view>
   </view>
 </template>
 
@@ -47,7 +48,9 @@
         // 主导航初始化数据
         navList:[],
         // 楼层初始化数据
-        floorList:[]
+        floorList:[],
+        // 页面滚动距离
+        scrollTop:0
       }
     },
 
@@ -80,7 +83,11 @@
           url:"/api/public/v1/home/floordata"
         })
         this.floorList = message
-        
+      },
+      // 回到顶部
+      goTop(){
+        // 调用API可以设置页面的滚动距离
+        uni.pageScrollTo({scrollTop:0})
       }
     },
     // 加载
@@ -90,13 +97,18 @@
       this.getNavList()
       this.getFlootList()
     },
-    // 监听下拉事件-小程序自带
+    // 监听下拉事件,获取数据并显示下拉动画(小程序自带)
     async onPullDownRefresh(){
       await this.getBannerList()
       await this.getNavList()
       await this.getFlootList()
       // 用于停止下拉刷新效果
       uni.stopPullDownRefresh()
+    },
+    // 监听用户滚动操作,到达指定距离显示回到顶部按钮 
+    onPageScroll(ev){
+      // 将滚动距离记录下来
+      this.scrollTop = ev.scrollTop
     }
   }
 </script>
