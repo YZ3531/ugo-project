@@ -8,58 +8,14 @@
     </view>
     <!-- 商品列表 -->
     <scroll-view class="goods" scroll-y>
-      <view class="item" @click="goDetail">
+      <view class="item" @click="goDetail" v-for="goods in goodList" :key="goods.goods_id">
         <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg"></image>
+        <image class="pic" :src="goods.goods_small_logo"></image>
         <!-- 商品信息 -->
         <view class="meta">
-          <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
+          <view class="name">{{goods.goods_name}}</view>
           <view class="price">
-            <text>￥</text>1399<text>.00</text>
-          </view>
-        </view>
-      </view>
-      <view class="item" @click="goDetail">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_2.jpg"></image>
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">卡奇莱德汽车车载空气净化器负离子除甲醛PM2.5除烟异味车用氧吧双涡轮出风（红色）</view>
-          <view class="price">
-            <text>￥</text>168<text>.00</text>
-          </view>
-        </view>
-      </view>
-      <view class="item" @click="goDetail">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_3.jpg"></image>
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">沿途（yantu）车载充电器车充一拖二usb转接口手机智能头多功能汽车点烟器</view>
-          <view class="price">
-            <text>￥</text>168<text>.00</text>
-          </view>
-        </view>
-      </view>
-      <view class="item" @click="goDetail">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_4.jpg"></image>
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">车载冰箱7.5L 冷暖两用汽车冰箱半导体12V迷你电冰箱升级款</view>
-          <view class="price">
-            <text>￥</text>168<text>.00</text>
-          </view>
-        </view>
-      </view>
-      <view class="item" @click="goDetail">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_5.jpg"></image>
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">神行者电子狗 神行者L70电子狗测速 测速雷达 流动测速 多种警示路段提醒</view>
-          <view class="price">
-            <text>￥</text>168<text>.00</text>
+            <text>￥</text>{{goods.goods_price}}<text>.00</text>
           </view>
         </view>
       </view>
@@ -69,13 +25,48 @@
 
 <script>
   export default {
-
+    data () {
+      return {
+        // 初始分页信息
+        pagenum:1, // 第几页
+        pagesize:10, // 每页几条数据 
+        // 商品列表
+        goodList:[]
+      }
+    },
     methods: {
       goDetail () {
         uni.navigateTo({
           url: '/pages/goods/index'
         })
+      },
+      // 获取商品列表页
+      async getGoodsList(query){
+        const {message} = await this.request({
+          url:"/api/public/v1/goods/search",
+          data:{
+            query:query.query,
+            pagenum:this.pagenum,
+            pagesize:this.pagesize
+          }
+        })
+        // 更新初始数据
+        this.goodList = message.goods
       }
+    },
+    onLoad(query){
+      // 小程序中通过在onload中来获取传递到当前页面的参数
+      // console.log(query);
+      
+      this.getGoodsList(query)
+    },
+    // 监听页面是否滚动到底部
+    // 只对页面滚动有效
+    // 页面滚动:当前窗口下内容滚动
+    // 区域滚动:当前页面下某盒子内部内容滚动
+    onReachBottom(){
+      console.log('666666666');
+      
     }
   }
 </script>

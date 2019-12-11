@@ -109,7 +109,8 @@
     onPageScroll(ev){
       // 将滚动距离记录下来
       this.scrollTop = ev.scrollTop
-    }
+    },
+   
   }
 </script>
 
