@@ -11,7 +11,7 @@
     </swiper>
     <!-- 导航条 -->
     <view class="navs">
-      <navigator v-for="nav in navList" :key="nav.name" open-type="switchTab" >
+      <navigator v-for="nav in navList" :key="nav.name" :open-type="nav.open_type||'navigate'" :url="nav.navigator_url||'/pages/list/index?query='+nav.name">
         <image :src="nav.image_src"></image>
       </navigator>
     </view>
