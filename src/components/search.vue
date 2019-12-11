@@ -17,13 +17,7 @@
     <div class="content">
       <div class="title">搜索历史<span class="clear"></span></div>
       <div class="history">
-        <navigator url="/pages/list/index">小米</navigator>
-        <navigator url="/pages/list/index">智能电视</navigator>
-        <navigator url="/pages/list/index">小米空气净化器</navigator>
-        <navigator url="/pages/list/index">西门子洗碗机</navigator>
-        <navigator url="/pages/list/index">华为手机</navigator>
-        <navigator url="/pages/list/index">苹果</navigator>
-        <navigator url="/pages/list/index">锤子</navigator>
+        <navigator url="/pages/list/index" v-for="(item,index) in history" :key="index">{{item}}</navigator>
       </div>
       <!-- 结果 -->
       <scroll-view v-if="list.length" scroll-y class="result">
@@ -43,7 +37,9 @@
         // 搜索建议
         list:[],
         // 搜索关键字
-        keyWords:""
+        keyWords:"",
+        // 搜索历史记录
+        history:uni.getStorageSync('history') || []
       }
     },
     methods: {
@@ -62,6 +58,9 @@
       },
       // 点击确定去列表页
       goList(){
+        // 小程序有专门实现本地存储的API
+        this.history.push(this.keyWords)
+        uni.setStorageSync('history',this.history) 
         // 小程序有专门实现跳转的API
         uni.navigateTo({
           // 页面跳转携带上关键字
@@ -103,7 +102,11 @@
         // 通过此API控制tabBer的显示,实现在搜索页面不可切换tabBer功能
         uni.showTabBar();
       }
-    }
+    },
+    // 小程序自定义组件中没有onload
+    // onLoad(){
+    //   this.history = uni.getStorageSync('history')||[]
+    // }
   }
 </script>
 
