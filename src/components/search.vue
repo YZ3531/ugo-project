@@ -3,10 +3,13 @@
   <div class="search" :class="{focused: focused}">
     <!-- 搜索框 -->
     <div class="input-wrap" @click="goSearch">
+      <!-- bindconfirm小程序特有事件,点击确定触发 -->
       <input 
         type="text" 
         :placeholder="placeholder"
+        v-model="keyWords"
         @input="query"
+        @confirm="goList"
       >
       <span class="cancle" @click.stop="cancleSearch">取消</span>
     </div>
@@ -23,25 +26,8 @@
         <navigator url="/pages/list/index">锤子</navigator>
       </div>
       <!-- 结果 -->
-      <scroll-view scroll-y class="result">
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
+      <scroll-view v-if="list.length" scroll-y class="result">
+        <navigator url="/pages/goods/index" v-for="item in list" :key="item.goods_id">{{item.goods_name}}</navigator>
       </scroll-view>
     </div>
   </div>
@@ -52,16 +38,36 @@
     data () {
       return {
         focused: false,
-        placeholder: ''
+        // 提示信息
+        placeholder: '',
+        // 搜索建议
+        list:[],
+        // 搜索关键字
+        keyWords:""
       }
     },
     methods: {
-      // 监听用户输入
-      query(){
+      // 监听用户输入操作,发送请求获取数据 
+      async query(){
+        const {message} = await this.request({
+          url:"/api/public/v1/goods/qsearch",
+          data:{
+            query:this.keyWords
+          }
+        })
+        this.list = message
+        console.log(message);
+        
         
       },
+      // 点击确定去列表页
+      goList(){
+
+      },
+      // 点击搜索
       goSearch (ev) {
         this.focused = true;
+        // 提示信息
         this.placeholder = '请输入您要搜索的内容';
         
         // 触发父组件自定义事件
@@ -70,11 +76,19 @@
         });
 
         // 隐藏tabBar
+        // 通过此API控制tabBer的显示,实现在搜索页面不可切换tabBer功能
         uni.hideTabBar();
       },
+      // 点击取消
       cancleSearch () {
-        this.focused = false;
-        this.placeholder = '';
+        this.focused = false
+        this.placeholder = ''
+        // 清空搜索框
+        this.keyWords = ""
+        // 清空查询结果列表
+        this.list = []
+        // 关闭加载提示
+        uni.hideLoading()
 
         // 触发父组件自定义事件
         this.$emit('search', {
@@ -82,6 +96,7 @@
         });
 
         // 显示tabBar
+        // 通过此API控制tabBer的显示,实现在搜索页面不可切换tabBer功能
         uni.showTabBar();
       }
     }

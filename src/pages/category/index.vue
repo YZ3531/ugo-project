@@ -53,8 +53,6 @@
           url:"/api/public/v1/categories"
         })
         this.topCategories = message
-        console.log(message);
-        
       },
       // 顶级分类的点击事件
       getChildCategories(index){
