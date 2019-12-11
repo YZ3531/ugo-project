@@ -11,78 +11,23 @@
     </swiper>
     <!-- 导航条 -->
     <view class="navs">
-      <navigator v-for="nav in navList" :key="nav.name" open-type="switchTab" :url="nav.navigator_url">
+      <navigator v-for="nav in navList" :key="nav.name" open-type="switchTab" >
         <image :src="nav.image_src"></image>
       </navigator>
     </view>
     <!-- 楼层 -->
     <view class="floors">
-      <view class="floor">
+      <view class="floor" v-for="(floor,index) in floorList" :key="index">
         <view class="title">
-          <image src="http://static.botue.com/ugo/uploads/pic_floor01_title.png"></image>
+          <image :src="floor.floor_title.image_src"></image>
         </view>
         <view class="items">
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_1@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_2@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_3@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_4@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_5@2x.png"></image>
+          <navigator url="/pages/list/index" v-for="product in floor.product_list" :key="product.name">
+            <image :src="product.image_src"></image>
           </navigator>
         </view>
       </view>
-      <view class="floor">
-        <view class="title">
-          <image src="http://static.botue.com/ugo/uploads/pic_floor02_title.png"/>
-        </view>
-        <view class="items">
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor02_1@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor02_2@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor02_3@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor02_4@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor02_5@2x.png"></image>
-          </navigator>
-        </view>
-      </view>
-      <view class="floor">
-        <view class="title">
-          <image src="http://static.botue.com/ugo/uploads/pic_floor03_title.png"></image>
-        </view>
-        <view class="items">
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor03_1@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor03_2@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor03_3@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor03_4@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor03_5@2x.png"></image>
-          </navigator>
-        </view>
-      </view>
+     
     </view>
     <!-- 回到顶部 -->
     <view class="goTop icon-top"></view>
@@ -97,8 +42,12 @@
     data () {
       return {
         pageHeight: 'auto',
+        // 轮播图初始化数据
         bannerList:[],
-        navList:[]
+        // 主导航初始化数据
+        navList:[],
+        // 楼层初始化数据
+        floorList:[]
       }
     },
 
@@ -112,27 +61,30 @@
       },
       // 获取轮播图数据
       async getBannerList(){
-        const data =  await uni.request({
-          url:"https://www.uinav.com/api/public/v1/home/swiperdata"
+        const {message} =  await this.request({
+          url:"/api/public/v1/home/swiperdata"
         })
-        this.bannerList = data[1].data.message
+        this.bannerList = message
       },
       // 获取导航数据
       async getNavList(){
-        const data = await uni.request({
-          url:"https://www.uinav.com/api/public/v1/home/catitems"
+        const {message} = await this.request({
+          url:"/api/public/v1/home/catitems"
         })
-        console.log(data)
-        this.navList = data[1].data.message
+        this.navList = message
 
       },
       // 获取楼层数据,
-      getFlootList(){
-
+      async getFlootList(){
+        const {message} = await this.request({
+          url:"/api/public/v1/home/floordata"
+        })
+        this.floorList = message
+        
       }
     },
     // 加载
-    onLoad(){
+    async onLoad(){
       // 发送请求,获取首屏的数据
       this.getBannerList()
       this.getNavList()
