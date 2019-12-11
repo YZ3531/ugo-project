@@ -3,7 +3,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        "enablePullDownRefresh": true// 只有首页可以采用下拉刷新
+        "enablePullDownRefresh": true // 只有首页可以采用下拉刷新
       }
     },
     {

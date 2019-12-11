@@ -3,7 +3,11 @@
   <div class="search" :class="{focused: focused}">
     <!-- 搜索框 -->
     <div class="input-wrap" @click="goSearch">
-      <input type="text" :placeholder="placeholder">
+      <input 
+        type="text" 
+        :placeholder="placeholder"
+        @input="query"
+      >
       <span class="cancle" @click.stop="cancleSearch">取消</span>
     </div>
     <!-- 搜索结果 -->
@@ -52,6 +56,10 @@
       }
     },
     methods: {
+      // 监听用户输入
+      query(){
+        
+      },
       goSearch (ev) {
         this.focused = true;
         this.placeholder = '请输入您要搜索的内容';
