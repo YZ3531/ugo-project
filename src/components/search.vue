@@ -62,7 +62,11 @@
       },
       // 点击确定去列表页
       goList(){
-
+        // 小程序有专门实现跳转的API
+        uni.navigateTo({
+          // 页面跳转携带上关键字
+          url:"/pages/list/index?query="+this.keyWords
+        })
       },
       // 点击搜索
       goSearch (ev) {
