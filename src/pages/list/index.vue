@@ -9,7 +9,7 @@
     <!-- 商品列表 -->
     <!-- scrolltolower小程序区域滚动底部事件,滚动至底部||右边触发 -->
     <scroll-view class="goods" @scrolltolower="getMore" scroll-y>
-      <view class="item" @click="goDetail" v-for="goods in goodList" :key="goods.goods_id">
+      <view class="item" @click="goDetail(goods.goods_id)" v-for="goods in goodList" :key="goods.goods_id">
         <!-- 商品图片 -->
         <image class="pic" :src="goods.goods_small_logo"></image>
         <!-- 商品信息 -->
@@ -37,9 +37,10 @@
       }
     },
     methods: {
-      goDetail () {
+      // 跳转商品详情页
+      goDetail (id) {
         uni.navigateTo({
-          url: '/pages/goods/index'
+          url: '/pages/goods/index?id='+id
         })
       },
       // 列表到底部,加载更多列表数据
