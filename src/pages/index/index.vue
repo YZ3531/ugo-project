@@ -89,6 +89,14 @@
       this.getBannerList()
       this.getNavList()
       this.getFlootList()
+    },
+    // 监听下拉事件-小程序自带
+    async onPullDownRefresh(){
+      await this.getBannerList()
+      await this.getNavList()
+      await this.getFlootList()
+      // 用于停止下拉刷新效果
+      uni.stopPullDownRefresh()
     }
   }
 </script>
