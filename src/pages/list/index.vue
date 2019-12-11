@@ -7,7 +7,8 @@
       <text>价格</text>
     </view>
     <!-- 商品列表 -->
-    <scroll-view class="goods" scroll-y>
+    <!-- scrolltolower小程序区域滚动底部事件,滚动至底部||右边触发 -->
+    <scroll-view class="goods" @scrolltolower="getMore" scroll-y>
       <view class="item" @click="goDetail" v-for="goods in goodList" :key="goods.goods_id">
         <!-- 商品图片 -->
         <image class="pic" :src="goods.goods_small_logo"></image>
@@ -27,6 +28,7 @@
   export default {
     data () {
       return {
+        query:null,
         // 初始分页信息
         pagenum:1, // 第几页
         pagesize:10, // 每页几条数据 
@@ -40,34 +42,42 @@
           url: '/pages/goods/index'
         })
       },
+      // 列表到底部,加载更多列表数据
+      getMore(){
+        // 页码+1
+        this.pagenum += 1
+        // 获取下一页数据
+        this.getGoodsList(this.query)
+      },
       // 获取商品列表页
-      async getGoodsList(query){
+      async getGoodsList(){
         const {message} = await this.request({
           url:"/api/public/v1/goods/search",
           data:{
-            query:query.query,
+            query:this.query,
             pagenum:this.pagenum,
             pagesize:this.pagesize
           }
         })
-        // 更新初始数据
-        this.goodList = message.goods
+        // 更新初始数据,不建议采用push操作,因为是将一个数组中的数据添加到另一个数组里面
+        this.goodList = this.goodList.concat(message.goods)
       }
     },
     onLoad(query){
       // 小程序中通过在onload中来获取传递到当前页面的参数
-      // console.log(query);
-      
-      this.getGoodsList(query)
+      // 保存地址栏传递来的参数
+      this.query = query.query
+      // 获取第一屏列表数据
+      this.getGoodsList()
     },
     // 监听页面是否滚动到底部
     // 只对页面滚动有效
     // 页面滚动:当前窗口下内容滚动
     // 区域滚动:当前页面下某盒子内部内容滚动
-    onReachBottom(){
-      console.log('666666666');
+    // onReachBottom(){
+    //   console.log('666666666');
       
-    }
+    // }
   }
 </script>
 
